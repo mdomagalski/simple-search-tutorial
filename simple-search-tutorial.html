@@ -1,0 +1,169 @@
+<!-- Imports polymer -->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<!-- Defines element markup -->
+<dom-module id="simple-search-tutorial">
+    <style is="simple-search-tutorial-style">
+        dialog {
+            background: #FFF;
+            width: 300px;
+            text-align: center;
+            padding: 1.5em;
+            margin: 1em auto;
+            border: 0;
+            z-index: 1;
+            border-top: 5px solid var(--paper-indigo-500);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+        paper-button.indigo {
+            font-family: "Roboto";
+            background-color: var(--paper-indigo-500);
+            color: white;
+        --paper-button-raised-keyboard-focus: {
+             background-color: var(--paper-indigo-a300) !important;
+             color: white !important;
+         };
+        }
+        paper-button.blank {
+            color: var(--paper-indigo-500);
+            text-decoration: underline;
+            text-transform: none;
+            min-width:0;
+            padding: 0;
+            margin: 0 5px 0 5px;
+        }
+        #stepByStepGuideButton {
+            margin-left: 30px;
+            color: var(--paper-indigo-500);
+            text-decoration: underline;
+        }
+    </style>
+    <template>
+        <paper-button id="stepByStepGuideButton" on-click="_tutorialDialogOne">step-by-step guide</paper-button>
+        <dialog id="ionDialog">
+            <p>First, input list of hypothetical glycopeptide precursor ions / masses </br>e.g.<paper-button class="blank" on-click="_presetMasses">{{masses}}</paper-button></p>
+            <paper-button class="indigo" on-click="_tutorialDialogTwo">next</paper-button>
+        </dialog>
+        <dialog id="ppmDialog">
+            <p>Next, set the tolerance value e.g. <paper-button class="blank" on-click="_presetPpm">5 ppm</paper-button></p>
+            <paper-button class="indigo" on-click="_tutorialDialogThree">next</paper-button>
+        </dialog>
+        <dialog id="searchDialog">
+            <p>Click on&nbsp;&nbsp;<paper-button class="indigo" on-click="_tutorialDialogFour"><iron-icon icon="search"></iron-icon>search</paper-button></p>
+        </dialog>
+        <dialog id="multiresultDialog">
+            <p>Results for every precursor ion are visualized on a separate chart.
+                </br>Switch results by clicking on a button labeled with precursor mass.</p>
+            <paper-button class="indigo" on-click="_tutorialDialogFive">next</paper-button>
+        </dialog>
+        <dialog id="sortDialog">
+            <p>By default charts are sorted by <paper-button class="blank" on-click="_sortByPpm">ppm distance.</paper-button>
+                </br>Sorting by <paper-button class="blank" on-click="_sortByMass">peptide and glycan masses</paper-button> is useful
+                for identifying intact peptide peak in MS2 spectra</p>
+            <paper-button class="indigo" on-click="_tutorialDialogSix">next</paper-button>
+        </dialog>
+        <dialog id="peptideFragmentationDialog">
+            <p>To see b and y ions of the theoretical peptide fragments, click on a <paper-button class="blank" on-click="_clickOnTile">glycopeptide tile</paper-button> and scroll to the bottom of the page</p>
+            <paper-button class="indigo" on-click="_tutorialDialogSeven">next</paper-button>
+        </dialog>
+        <dialog id="filterDialog">
+            <p>To open glycan composition filter click on <paper-button class="indigo" on-click="_toggleFilter">glycan composition filter</paper-button></br>
+                </br><paper-button class="blank" on-click="_toggleOffComp">Toggle off unexpected monomers</paper-button> </br>and use sliders to set <paper-button class="blank" on-click="_setCompRange">minimum count of expected monomers.</paper-button> </br>Click on the<paper-button class="blank" on-click="_clearFilter">refresh button</paper-button> in top right corner of the window to reset the filter.
+                </br></br>Chart will update automatically</p>
+            <paper-button class="indigo" on-click="_closeTutorial">close tutorial</paper-button>
+        </dialog>
+    </template>
+    <script>
+        Polymer({
+            is: 'simple-search-tutorial',
+            properties: {
+                masses: {
+                    type: String,
+                    value: "910.386(+3), 930.089(+3)"
+                },
+                toleranceUnit: {
+                    value: "ppm"
+                },
+                toleranceValue: {
+                    value: 5
+                }
+            },
+            _presetMasses: function(){
+                this.domHost.masses = this.masses;
+            },
+            _presetPpm: function(){
+                this.domHost.toleranceUnit = this.toleranceUnit;
+                this.domHost.toleranceValue = this.toleranceValue;
+            },
+            _sortByMass: function(){
+                this.domHost.querySelector("pepsweetener-heatmap").sortByMass();
+            },
+            _sortByPpm: function(){
+                this.domHost.querySelector("pepsweetener-heatmap").sortByPpm();
+            },
+            _clickOnTile: function(){
+                var evt = document.createEvent("MouseEvents");
+                evt.initMouseEvent("click", true, true, window,
+                    0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                this.domHost.querySelector("rect").dispatchEvent(evt);
+            },
+            _toggleFilter: function() {
+                var evt = document.createEvent("MouseEvents");
+                evt.initMouseEvent("click", true, true, window,
+                    0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                this.domHost.querySelector("#filterToggleButton").dispatchEvent(evt);
+            },
+            _clearFilter: function() {
+                var evt = document.createEvent("MouseEvents");
+                evt.initMouseEvent("click", true, true, window,
+                    0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                this.domHost.querySelector("#clearIcon").dispatchEvent(evt);
+            },
+            _toggleOffComp: function(){
+                this.domHost.querySelector("#PenToggle").removeAttribute('checked');
+                this.domHost.querySelector("#PToggle").removeAttribute('checked');
+            },
+            _setCompRange: function(){
+                this.domHost.querySelector("#HexRange").setAttribute('value', 3);
+                this.domHost.querySelector("#HexNAcRange").setAttribute('value', 2);
+            },
+            _tutorialDialogOne: function() {
+                this.$.ionDialog.show();
+            },
+            _tutorialDialogTwo: function(){
+                this.$.ionDialog.close();
+                if (this.domHost.masses=='') this._presetMasses();
+                this.$.ppmDialog.show();
+            },
+            _tutorialDialogThree: function(){
+                this.$.ppmDialog.close();
+                this._presetPpm();
+                this.$.searchDialog.show();
+            },
+            _tutorialDialogFour: function(){
+                this.domHost.search();
+                this.$.searchDialog.close();
+                this.$.multiresultDialog.show();
+            },
+            _tutorialDialogFive: function(){
+                this.$.multiresultDialog.close();
+                this.$.sortDialog.show();
+            },
+            _tutorialDialogSix: function(){
+                this.$.sortDialog.close();
+                this.$.peptideFragmentationDialog.show();
+            },
+            _tutorialDialogSeven: function(){
+                this.$.peptideFragmentationDialog.close();
+                this.$.filterDialog.show();
+            },
+            _closeTutorial: function(){
+                this.$.filterDialog.close();
+            }
+        });
+    </script>
+
+</dom-module>

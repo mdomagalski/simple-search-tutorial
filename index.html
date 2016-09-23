@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pepsweetener simple-search-tutorial</title>
+
+    <!-- Imports custom element -->
+    <link rel="import" href="simple-search-tutorial.html">
+</head>
+
+<!-- if needed polyfill is imported onload-->
+<body onload="(function() {
+        if ('registerElement' in document
+            && 'import' in document.createElement('link')
+            && 'content' in document.createElement('template')) {
+            // platform is good!
+        } else {
+            // polyfill the platform!
+            var e = document.createElement('script');
+            e.src = '../webcomponentsjs/webcomponents-lite.min.js';
+            document.body.appendChild(e);
+        }
+    })();">
+<!-- Runs custom element -->
+<simple-search-tutorial></simple-search-tutorial>
+</body>
+</html>
+
