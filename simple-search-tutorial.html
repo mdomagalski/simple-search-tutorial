@@ -149,10 +149,12 @@
             _toggleOffComp: function(){
                 this.domHost.querySelector("#PenToggle").removeAttribute('checked');
                 this.domHost.querySelector("#PToggle").removeAttribute('checked');
+                this.domHost.querySelector("pepsweetener-glycan-filter")._changeOfSlider();
             },
             _setCompRange: function(){
                 this.domHost.querySelector("#HexRange").setAttribute('value', 3);
                 this.domHost.querySelector("#HexNAcRange").setAttribute('value', 2);
+                this.domHost.querySelector("pepsweetener-glycan-filter")._changeOfRange();
             },
             _tutorialDialogOne: function() {
                 this.$.ionDialog.open();
