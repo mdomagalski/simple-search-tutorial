@@ -12,6 +12,7 @@
             z-index:1;
             background: #FFF;
             width: 400px;
+            min-height: 200px;
             text-align: center;
             border: 0;
             margin: 0;
@@ -61,38 +62,38 @@
     <template>
         <paper-button id="stepByStepGuideButton" on-click="_tutorialDialogOne">step-by-step guide</paper-button>
         <paper-dialog id="ionDialog" no-cancel-on-outside-click="true">
-            <iron-icon id="closeIcon" icon="icons:close" alt="close" on-click="_close"></iron-icon>
+            <iron-icon id="closeIcon" icon="icons:close" alt="close" dialog-dismiss></iron-icon>
             <p>First, input list of hypothetical glycopeptide precursor ions / masses e.g.<paper-button class="blank" on-click="_presetMasses">{{masses}}</paper-button></p>
             <paper-button class="indigo" on-click="_tutorialDialogTwo">next</paper-button>
         </paper-dialog>
         <paper-dialog id="ppmDialog" no-cancel-on-outside-click="true">
-            <iron-icon id="closeIcon" icon="icons:close" alt="close" on-click="_close"></iron-icon>
-            <p>Next, set the tolerance value e.g. <paper-button class="blank" on-click="_presetPpm">5 ppm</paper-button></p>
+            <iron-icon id="closeIcon" icon="icons:close" alt="close" dialog-dismiss></iron-icon>
+            <p></br>Next, set the tolerance value e.g. <paper-button class="blank" on-click="_presetPpm">5 ppm</paper-button></p>
             <paper-button class="indigo" on-click="_tutorialDialogThree">next</paper-button>
         </paper-dialog>
         <paper-dialog id="searchDialog" no-cancel-on-outside-click="true">
-            <iron-icon id="closeIcon" icon="icons:close" alt="close" on-click="_close"></iron-icon>
-            <p>Click on&nbsp;&nbsp;<paper-button class="indigo" on-click="_tutorialDialogFour"><iron-icon icon="search"></iron-icon>search</paper-button></p>
+            <iron-icon id="closeIcon" icon="icons:close" alt="close" dialog-dismiss></iron-icon>
+            <p></br></br>Click on&nbsp;&nbsp;<paper-button class="indigo" on-click="_tutorialDialogFour"><iron-icon icon="search"></iron-icon>search</paper-button></p>
         </paper-dialog>
         <paper-dialog id="multiresultDialog" no-cancel-on-outside-click="true">
-            <iron-icon id="closeIcon" icon="icons:close" alt="close" on-click="_close"></iron-icon>
+            <iron-icon id="closeIcon" icon="icons:close" alt="close" dialog-dismiss></iron-icon>
             <p>Results for each precursor ion are visualized on a separate chart. Switch results by clicking on a button labeled with precursor mass.</p>
             <paper-button class="indigo" on-click="_tutorialDialogFive">next</paper-button>
         </paper-dialog>
         <paper-dialog id="sortDialog" no-cancel-on-outside-click="true">
-            <iron-icon id="closeIcon" icon="icons:close" alt="close" on-click="_close"></iron-icon>
+            <iron-icon id="closeIcon" icon="icons:close" alt="close" dialog-dismiss></iron-icon>
             <p>By default charts are sorted by <paper-button class="blank" on-click="_sortByPpm">ppm distance.</paper-button>
                 </br>Sorting by <paper-button class="blank" on-click="_sortByMass">peptide and glycan masses</paper-button> is useful
                 for identifying intact peptide peak in MS2 spectra</p>
             <paper-button class="indigo" on-click="_tutorialDialogSix">next</paper-button>
         </paper-dialog>
         <paper-dialog id="peptideFragmentationDialog" no-cancel-on-outside-click="true">
-            <iron-icon id="closeIcon" icon="icons:close" alt="close" on-click="_close"></iron-icon>
+            <iron-icon id="closeIcon" icon="icons:close" alt="close" dialog-dismiss></iron-icon>
             <p>To see b and y ions of the theoretical peptide fragments, click on a <paper-button class="blank" on-click="_clickOnTile">glycopeptide tile</paper-button> and scroll to the bottom of the page</p>
             <paper-button class="indigo" on-click="_tutorialDialogSeven">next</paper-button>
         </paper-dialog>
         <paper-dialog id="filterDialog" no-cancel-on-outside-click="true">
-            <iron-icon id="closeIcon" icon="icons:close" alt="close" on-click="_close"></iron-icon>
+            <iron-icon id="closeIcon" icon="icons:close" alt="close" dialog-dismiss></iron-icon>
             <p>To open glycan composition filter click on </br></br><paper-button class="indigo" on-click="_toggleFilter">glycan composition filter</paper-button></br></br>
                 <paper-button class="blank" on-click="_toggleOffComp">Toggle off unexpected monomers</paper-button>
                 and use sliders to set <paper-button class="blank" on-click="_setCompRange">minimum count of expected monomers.</paper-button>
@@ -122,6 +123,9 @@
                 this.domHost.toleranceUnit = this.toleranceUnit;
                 this.domHost.toleranceValue = this.toleranceValue;
             },
+            closeDialog: function() {
+                this.$$("#ionDialog").close();
+            },
             _sortByMass: function(){
                 this.domHost.querySelector("pepsweetener-heatmap").sortByMass();
             },
@@ -149,12 +153,12 @@
             _toggleOffComp: function(){
                 this.domHost.querySelector("#PenToggle").removeAttribute('checked');
                 this.domHost.querySelector("#PToggle").removeAttribute('checked');
-                this.domHost.querySelector("pepsweetener-glycan-filter")._changeOfSlider();
+                this.domHost.querySelector("pepsweetener-glycan-filter")._createGlycanFilter();
             },
             _setCompRange: function(){
                 this.domHost.querySelector("#HexRange").setAttribute('value', 3);
                 this.domHost.querySelector("#HexNAcRange").setAttribute('value', 2);
-                this.domHost.querySelector("pepsweetener-glycan-filter")._changeOfRange();
+                this.domHost.querySelector("pepsweetener-glycan-filter")._createGlycanFilter();
             },
             _tutorialDialogOne: function() {
                 this.$.ionDialog.open();
